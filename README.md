@@ -32,6 +32,8 @@ The output is written to `channel2d/outc/` folder.
 
 ## Display simulation using **Lua** code
 
+Install [Lua](https://lua.org) and [Love2d](https://love2d.org/)
+
 For boundaryless free flow:
 ```
 love free2d/ free2d/out/
