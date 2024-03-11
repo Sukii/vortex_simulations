@@ -37,7 +37,7 @@ For boundaryless free flow:
 love free2d/ free2d/out/
 ```
 
-(sample video: ![](https://vimeo.com/922070885?share=copy))
+(sample video: ![free2d-vortices](https://vimeo.com/922070885?share=copy))
 
 For 2D channel flow:
 ```
@@ -46,7 +46,7 @@ love channel2d/ channel2d/out/
 
 You should here sound of water flowing!
 
-(sample video: ![](https://vimeo.com/922081441?share=copy))
+(sample video: ![channel-flow](https://vimeo.com/922081441?share=copy))
 
 If you are Windows user you should be able to modify the shell script to a batch script and run it on Windows. Lua-Love2d also should run fine on Windows!
 Please do tell me if you have difficulties running on Windows!
