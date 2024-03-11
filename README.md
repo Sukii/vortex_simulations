@@ -39,8 +39,8 @@ love free2d/ free2d/out/
 
 Sample free vortices video:
 
-<video src="https://vimeo.com/922070885?share=copy=" width="320" height="240" controls></video>
-
+<iframe src="https://player.vimeo.com/video/922070885?h=2740182568" width="640" height="611" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+<p><a href="https://vimeo.com/922070885">Free 2D vortices</a> from <a href="https://vimeo.com/user53969361">Suki Venkat</a> on <a href="https://vimeo.com">Vimeo</a>.</p>
 
 For 2D channel flow:
 ```
@@ -51,8 +51,8 @@ You should here sound of water flowing!
 
 Sample 2D channel flow video:
 
-<video src="https://vimeo.com/922081441?share=copy=" width="320" height="240" controls></video>
-
+<iframe src="https://player.vimeo.com/video/922081441?h=03164383d1" width="640" height="343" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+<p><a href="https://vimeo.com/922081441">Two-dimensional channel flow</a> from <a href="https://vimeo.com/user53969361">Suki Venkat</a> on <a href="https://vimeo.com">Vimeo</a>.</p>
 
 
 If you are Windows user you should be able to modify the shell script to a batch script and run it on Windows. Lua-Love2d also should run fine on Windows!
