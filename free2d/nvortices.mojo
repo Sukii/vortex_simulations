@@ -31,7 +31,6 @@ fn advance(inout vors: InlinedFixedVector[Vortex,NUM_VORTICES], dt: Float16):
     @unroll
     for i in range(NUM_VORTICES):
         var vortex_i = vors[i]
-        print(i,vortex_i.pos,vortex_i.mass)
         @unroll(NUM_VORTICES - 1)
         for j in range(NUM_VORTICES - i - 1):
            var vortex_j = vors[j + i + 1]
@@ -73,14 +72,21 @@ fn run():
            w,
         )
         vors.__setitem__(ij,vortex_ij)
-    let v = vors.__getitem__(5)
-    print(v.pos,v.mass)
+    #--print init values--
+    var t:Float16 = 0
+    let dt:Float16 = 0.01
+    print_vec(vors,t)
     for i in range(10):
+        t = t + dt
         print("advance:",i)
-        advance(vors, 0.01)
-        let v = vors.__getitem__(5)
-        print(v.pos,v.mass)
+        advance(vors, dt)
+        print_vec(vors,t)
 
+fn print_vec(vors: InlinedFixedVector[Vortex,NUM_VORTICES], t: Float16):
+    print("time:",t)
+    for k in range(NUM_VORTICES):
+      let v = vors.__getitem__(k)
+      print(k,v.pos,v.mass)
 
 fn main():
     print("Starting nvortices...")
