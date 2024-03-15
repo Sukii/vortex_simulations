@@ -1,6 +1,7 @@
 #== nvortices in motion ===
 from collections.vector import InlinedFixedVector
 from python import Python
+import math
 
 alias PI = 3.141592653589793
 alias D = 2
@@ -75,18 +76,25 @@ fn run():
     #--print init values--
     var t:Float16 = 0
     let dt:Float16 = 0.01
-    print_vec(vors,t)
+    write_vec(vors,t)
     for i in range(10):
         t = t + dt
         print("advance:",i)
         advance(vors, dt)
-        print_vec(vors,t)
+        write_vec(vors,t)
 
-fn print_vec(vors: InlinedFixedVector[Vortex,NUM_VORTICES], t: Float16):
-    print("time:",t)
-    for k in range(NUM_VORTICES):
-      let v = vors.__getitem__(k)
-      print(k,v.pos,v.mass)
+fn write_vec(vors: InlinedFixedVector[Vortex,NUM_VORTICES], t: Float16):
+    var fp:String = "outx/vortices_" + str(t)
+    try:
+      var f = open(fp, "w")
+      f.write("time:" + str(math.round(t*100)) + "\n")
+      for k in range(NUM_VORTICES):
+        let v = vors.__getitem__(k)
+        var data:String = str(k) + "," +  str(v.pos[0]) + "," + str(v.pos[2]) + "," + str(v.mass) + "\n"
+        f.write(data)
+      f.close()
+    except IOError:
+      print("Error: File does not appear to exist.")
 
 fn main():
     print("Starting nvortices...")
