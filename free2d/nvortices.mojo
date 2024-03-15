@@ -1,6 +1,5 @@
 #== nvortices in motion ===
 from collections.vector import InlinedFixedVector
-from python import Python
 import math
 
 alias PI = 3.141592653589793
@@ -84,10 +83,10 @@ fn run():
         write_vec(vors,t)
 
 fn write_vec(vors: InlinedFixedVector[Vortex,NUM_VORTICES], t: Float16):
-    var fp:String = "outx/vortices_" + str(t)
+    var fp:String = "outx/vortices_" + str(math.round(t*100)) + ".data"
     try:
       var f = open(fp, "w")
-      f.write("time:" + str(math.round(t*100)) + "\n")
+      f.write("time:" + str(t) + "\n")
       for k in range(NUM_VORTICES):
         let v = vors.__getitem__(k)
         var data:String = str(k) + "," +  str(v.pos[0]) + "," + str(v.pos[2]) + "," + str(v.mass) + "\n"
