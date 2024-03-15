@@ -26,23 +26,26 @@ struct Vortex:
 
 
 
-fn advance(vortices: InlinedFixedVector[Vortex,NUM_VORTICES], dt: Float16) -> InlinedFixedVector[Vortex,NUM_VORTICES]:
-    var temp_vortices:InlinedFixedVector[Vortex,NUM_VORTICES] = vortices.deepcopy()
+fn advance(inout vors: InlinedFixedVector[Vortex,NUM_VORTICES], dt: Float16):
+# Clear the original vector
     @unroll
     for i in range(NUM_VORTICES):
-        var vortex_i = temp_vortices[i]
+        var vortex_i = vors[i]
+        print(i,vortex_i.pos,vortex_i.mass)
         @unroll(NUM_VORTICES - 1)
-        for j in range(NUM_VORTICES):
-           if(i != j):
-             var vortex_j = vortices[j]
-             let diff = vortex_i.pos - vortex_j.pos
-             let cdiff = SIMD[DType.float16, 2](diff[1],-diff[0])
-             var diff_sqr = (diff * diff).reduce_add()
-             if(diff_sqr < eps):
-                diff_sqr = eps
-             let mag = dt / (diff_sqr)
-             vortex_i.pos -= cdiff * vortex_j.mass * mag
-    return temp_vortices
+        for j in range(NUM_VORTICES - i - 1):
+           var vortex_j = vors[j + i + 1]
+           let diff = vortex_i.pos - vortex_j.pos
+           let cdiff = SIMD[DType.float16, 2](diff[1],-diff[0])
+           var diff_sqr = (diff * diff).reduce_add()
+           if(diff_sqr < eps):
+              diff_sqr = eps
+           let mag = dt / (diff_sqr)
+           vortex_i.pos -= cdiff * vortex_j.mass * mag
+           vortex_j.pos += cdiff * vortex_i.mass * mag
+           vors[j + i + 1] = vortex_j
+           
+        vors[i] = vortex_i
 
 fn run():
     var vortex_00 = Vortex(
@@ -74,7 +77,7 @@ fn run():
     print(v.pos,v.mass)
     for i in range(10):
         print("advance:",i)
-        vors = advance(vors, 0.01)
+        advance(vors, 0.01)
         let v = vors.__getitem__(5)
         print(v.pos,v.mass)
 
