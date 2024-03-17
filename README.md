@@ -1,6 +1,8 @@
 # Vortex Simulations
 
-We use FORTRAN for generating flow data and Lua-Love2D for displaying results as a graphical simulation. 
+This work was part of my Ph.D. thesis work in Indian Statistical Institute, Calcutta (Kolkatta). At that time it ran on [VAX](https://en.wikipedia.org/wiki/VAX) systems with 512MB RAM! UN.Sinha developed his `FloSolver` in 1986, a powerful super computer. Now I am able to run this on my laptop with Intel 7 and 12 CPU cores using OpenMP support.
+
+We use FORTRAN for generating flow data and Lua-Love2D for displaying results as a graphical simulation. Rewriting the FORTRAN code in [Mojo](https://github.com/modularml/mojo) to see how fast it runs on my laptop. Also hoping to do some Deep Learning simulations of vorticity flows with some application to ocean and atmospheric flows.
 
 ## Running FORTRAN code (Linux UBUNTU users):
 
