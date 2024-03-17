@@ -101,6 +101,9 @@ function love.keypressed(key)
    if key == "up" then
       state = "run"
    end
+   if(n > 2) then
+      n = n - 2
+   end
 end
 
 function rgba(v)
