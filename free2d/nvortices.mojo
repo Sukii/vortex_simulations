@@ -74,13 +74,15 @@ fn run():
         vors.__setitem__(ij,vortex_ij)
     #--print init values--
     var t:Float16 = 0.0
+    var n:Int = 0
     let dt:Float16 = 0.01
-    write_vec(vors,t)
+    write_vec(vors,t,n)
     for i in range(10):
         t = t + dt
+        n = n + 1
         print("advance:",i)
         advance(vors, dt)
-        write_vec(vors,t)
+        write_vec(vors,t,n)
 
 fn strFloat(f:Float16) -> String:
    try:
@@ -93,8 +95,8 @@ fn strFloat(f:Float16) -> String:
    except:
       return "Error!"
 
-fn write_vec(vors: InlinedFixedVector[Vortex,NUM_VORTICES], t: Float16):
-    var fp:String = "outx/vortices_" + strFloat(t) + ".data"
+fn write_vec(vors: InlinedFixedVector[Vortex,NUM_VORTICES], t:Float16, n: Int):
+    var fp:String = "outx/vortices_" + str(n) + ".data"
     try:
       var f = open(fp, "w")
       f.write("time:" + str(t) + "\n")
