@@ -9,11 +9,10 @@ import math
 alias PI = 3.141592653589793
 alias D = 2
 alias B = 4
-alias N = 50
+alias N = 10
 alias delta = 1.0/N
 alias NUM_VORTICES = N*N*D*B
 alias eps = 0.0000001
-alias MROUND_OFF = 1000
 
 @register_passable("trivial")
 struct Vortex:
@@ -64,7 +63,7 @@ fn run():
     var vors:InlinedFixedVector[Vortex,NUM_VORTICES]
     print("initializing ... ", NUM_VORTICES, " vortices")
     vors.__init__(NUM_VORTICES)
-    print("initialized ...")
+    print("initialized ... with delta: ", delta)
     for i in range(N*B):
       for j in range(N*D):
         var ij:Int = i*N*D+j
@@ -90,16 +89,26 @@ fn run():
         advance(vors, dt)
         write_vec(vors,t)
 
+fn strFloat(s:String) -> String:
+   try:
+      let L:Int = s.split(".")[0].__len__()
+      var LF:Int = s.__len__()
+      if(LF > L+7):
+         LF = L+7
+      return s.split(".")[0] + s[L:LF]
+   except:
+      return "Error!"
 
 fn write_vec(vors: InlinedFixedVector[Vortex,NUM_VORTICES], t: Float16):
-    var fp:String = "outx/vortices_" + str(math.round(t*100)) + ".data"
+    var fp:String = "outx/vortices_" + strFloat(t) + ".data"
     
     try:
       var f = open(fp, "w")
       f.write("time:" + str(t) + "\n")
       for k in range(NUM_VORTICES):
         let v = vors.__getitem__(k)
-        var data:String = str(k) + "," +  str(math.round(v.pos[0]*MROUND_OFF)/MROUND_OFF) + "," + str(math.round(v.pos[1]*MROUND_OFF)/MROUND_OFF) + "," + str(math.round(v.mass*MROUND_OFF)/MROUND_OFF) + "\n"
+        let sep:String = " "
+        var data:String = str(k) + sep +  strFloat(str(v.pos[0])) + sep + strFloat(str(v.pos[1])) + sep + strFloat(str(v.mass)) + "\n"
         f.write(data)
       f.close()
     except IOError:

@@ -1,12 +1,12 @@
 #== nvortices in motion ===
 from collections.vector import InlinedFixedVector
 import math
-
+import sys 
 alias PI = 3.141592653589793
 alias D = 2
-alias B = 5
-alias N = 2
-alias delta = 0.5
+alias B = 4
+alias N = 10
+alias delta = 1.0/N
 alias NUM_VORTICES = N*N*D*B
 alias eps = 0.0000001
 
@@ -28,10 +28,10 @@ struct Vortex:
 
 fn advance(inout vors: InlinedFixedVector[Vortex,NUM_VORTICES], dt: Float16):
 # Clear the original vector
-    @unroll
+    #@unroll
     for i in range(NUM_VORTICES):
         var vortex_i = vors[i]
-        @unroll(NUM_VORTICES - 1)
+        #@unroll(NUM_VORTICES - 1)
         for j in range(NUM_VORTICES - i - 1):
            var vortex_j = vors[j + i + 1]
            let diff = vortex_i.pos - vortex_j.pos
@@ -57,7 +57,7 @@ fn run():
     var vors:InlinedFixedVector[Vortex,NUM_VORTICES]
     print("initializing ... ", NUM_VORTICES, " vortices")
     vors.__init__(NUM_VORTICES)
-    print("initialized ...")
+    print("initialized ... with delta:", delta)
     for i in range(N*B):
       for j in range(N*D):
         var ij:Int = i*N*D+j
@@ -73,7 +73,7 @@ fn run():
         )
         vors.__setitem__(ij,vortex_ij)
     #--print init values--
-    var t:Float16 = 0
+    var t:Float16 = 0.0
     let dt:Float16 = 0.01
     write_vec(vors,t)
     for i in range(10):
@@ -82,14 +82,26 @@ fn run():
         advance(vors, dt)
         write_vec(vors,t)
 
+fn strFloat(f:Float16) -> String:
+   try:
+      let s:String = str(f)
+      let L:Int = s.split(".")[0].__len__()
+      var LF:Int = s.__len__()
+      if(LF > L+7):
+         LF = L+7
+      return s.split(".")[0] + s[L:LF]
+   except:
+      return "Error!"
+
 fn write_vec(vors: InlinedFixedVector[Vortex,NUM_VORTICES], t: Float16):
-    var fp:String = "outx/vortices_" + str(math.round(t*100)) + ".data"
+    var fp:String = "outx/vortices_" + strFloat(t) + ".data"
     try:
       var f = open(fp, "w")
       f.write("time:" + str(t) + "\n")
       for k in range(NUM_VORTICES):
         let v = vors.__getitem__(k)
-        var data:String = str(k) + "," +  str(v.pos[0]) + "," + str(v.pos[2]) + "," + str(v.mass) + "\n"
+        let sep:String = " "
+        var data:String = str(k) + sep +  strFloat(v.pos[0]) + sep + strFloat(v.pos[2]) + sep + strFloat(v.mass) + "\n"
         f.write(data)
       f.close()
     except IOError:
