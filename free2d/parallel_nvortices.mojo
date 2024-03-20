@@ -30,7 +30,7 @@ struct Vortex:
 
 
 
-@parameter(inout vors: InlinedFixedVector[Vortex,NUM_VORTICES])
+@parameter
 fn advance(inout vors: InlinedFixedVector[Vortex,NUM_VORTICES], dt: Float16):
 # Clear the original vector
     var temp_vors: InlinedFixedVector[Vortex,NUM_VORTICES] = vors
@@ -42,12 +42,12 @@ fn advance(inout vors: InlinedFixedVector[Vortex,NUM_VORTICES], dt: Float16):
         for j in range(NUM_VORTICES):
             if(i != j):
                 var vortex_j = temp_vors[j]
-                let diff = vortex_i.pos - vortex_j.pos
-                let cdiff = SIMD[DType.float16, 2](diff[1],-diff[0])
+                var diff = vortex_i.pos - vortex_j.pos
+                var cdiff = SIMD[DType.float16, 2](diff[1],-diff[0])
                 var diff_sqr = (diff * diff).reduce_add()
                 if(diff_sqr < eps):
                     diff_sqr = eps
-                let mag = dt / (diff_sqr)
+                var mag = dt / (diff_sqr)
                 vortex_i.pos -= cdiff * vortex_j.mass * mag
         vors[i].pos = vortex_i.pos
         #print("ix:",i,vors[i].pos,vors[i].mass)
@@ -81,7 +81,7 @@ fn run():
     #--print init values--
     var t:Float16 = 0
     var n:Int = 0
-    let dt:Float16 = 0.01
+    var dt:Float16 = 0.01
     write_vec(vors,t,n)
     parallelize[advance](4,10)
     for i in range(10):
@@ -93,7 +93,7 @@ fn run():
 
 fn strFloat(s:String) -> String:
    try:
-      let L:Int = s.split(".")[0].__len__()
+      var L:Int = s.split(".")[0].__len__()
       var LF:Int = s.__len__()
       if(LF > L+7):
          LF = L+7
@@ -108,8 +108,8 @@ fn write_vec(vors: InlinedFixedVector[Vortex,NUM_VORTICES], t: Float16, n:Int):
       var f = open(fp, "w")
       f.write("time:" + str(t) + "\n")
       for k in range(NUM_VORTICES):
-        let v = vors.__getitem__(k)
-        let sep:String = " "
+        var v = vors.__getitem__(k)
+        var sep:String = " "
         var data:String = str(k) + sep +  strFloat(str(v.pos[0])) + sep + strFloat(str(v.pos[1])) + sep + strFloat(str(v.mass)) + "\n"
         f.write(data)
       f.close()
