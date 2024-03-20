@@ -30,7 +30,7 @@ struct Vortex:
 
 
 
-#@parameter(inout vors: InlinedFixedVector[Vortex,NUM_VORTICES])
+@parameter(inout vors: InlinedFixedVector[Vortex,NUM_VORTICES])
 fn advance(inout vors: InlinedFixedVector[Vortex,NUM_VORTICES], dt: Float16):
 # Clear the original vector
     var temp_vors: InlinedFixedVector[Vortex,NUM_VORTICES] = vors
@@ -83,7 +83,7 @@ fn run():
     var n:Int = 0
     let dt:Float16 = 0.01
     write_vec(vors,t,n)
-    #parallelize[advance](4,10)
+    parallelize[advance](4,10)
     for i in range(10):
         t = t + dt
         n = n + 1
