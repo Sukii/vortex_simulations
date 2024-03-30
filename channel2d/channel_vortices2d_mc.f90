@@ -31,19 +31,17 @@ DT = 0.01
 IF(NIT == 0) THEN
    open(unit=NIT, file=filename, status="old", position="append", action="write")
    !--Initializing vortices--
-   DO I=1,NB
-      DO J=1,ND
-         CALL RANDOM_NUMBER(f)
-         X = ((I-1) + rho(f,h))*delta
-         CALL RANDOM_NUMBER(g)
-         Y = ((J-1) + rho(g,h))*delta
-         W = WW*(1-2*Y/D)
-         IJ = (I-1)*ND + J
-         VORTICES(IJ,1) = X
-         VORTICES(IJ,2) = Y
-         VORTICES(IJ,3) = W
-         WRITE(io, *) IJ, X, Y, W
-      END DO
+   DO I=1,NB*ND
+      CALL RANDOM_NUMBER(f)
+      X = (B/2)+(1-2*f)*B/20
+      CALL RANDOM_NUMBER(g)
+      Y = (D/2)+(1-2*g)*D/20
+      CALL RANDOM_NUMBER(h)
+      W = WW*(1.0-2.0*h)/20
+      VORTICES(I,1) = X
+      VORTICES(I,2) = Y
+      VORTICES(I,3) = W
+      WRITE(io, *) I, X, Y, W
    END DO
    close(NIT)
 ELSE
@@ -62,10 +60,8 @@ END IF
 
 DO it=NIT+1,250
    !$OMP PARALLEL
-   uslip = getuslip(B,D,vortices,M,sigma)
-   !PRINT *, uslip
    !--Update vortices to temporary vor-- 
-   call chvelocity(B,D,uslip,vortices,M,DT,sigma,vor)
+   call chvelocity(B,D,vortices,M,DT,sigma,vor)
    !$OMP END PARALLEL
    !--Update vortices from vor--
    vortices = vor
@@ -128,47 +124,8 @@ subroutine cvelocity(B,D,Z,Z0,FZ)
   END DO
 end subroutine cvelocity
 
-real function getuslip(B,D,vortices,M,sigma)
-  integer, intent(in) :: M
-  real, intent(in) :: B,D,sigma
-  real :: uslip
-  real, DIMENSION(100000,3), intent(in) :: vortices
-  real, DIMENSION(100) :: us, vs
-  COMPLEX :: Z, Z0, ZZ0, IMG, VELOCITY, FZ
-  IMG =CMPLX(0.0,1.0)
-  MS = 100
-  KS = 1
-  DO k=1,KS+1
-     us(k) = 0.0
-     vs(k) = 0.0
-     y = (k-1)*D/KS
-     DO i=1,MS
-        x = (i-1)*B/MS
-        Z = CMPLX(x,y)
-        DO j=1,M
-           qx = vortices(j,1)
-           qy = vortices(j,2)
-           qw = vortices(j,3)
-           Z0 = CMPLX(qx,qy)
-           ZZ0 = Z-Z0
-           AZZ0 = ABS(ZZ0)
-           !PRINT *, "params:", i, j, A,B,Z,Z0,MZ,FZ
-           CALL cvelocity(B,D,Z,Z0,FZ)
-           !PRINT *, "FZ:", REAL(FZ), AIMAG(FZ), gexp(AZZ0,sigma)
-           VELOCITY = IMG*gexp(AZZ0,sigma)*(qw/D)*FZ
-           u = REAL(VELOCITY)
-           v = AIMAG(VELOCITY)
-           us(k) = us(k) + u
-           vs(k) = vs(k) + v
-        END DO
-     END DO
-     !PRINT *, y, us(k), vs(k)
-  ENDDO
-  getuslip = (us(1)+us(KS+1))/(2*MS)
-end function getuslip
-
-subroutine chvelocity(B,D,uslip,vortices,M,DT,sigma,vor)
-  real, intent(in) :: B,D,uslip,DT,sigma
+subroutine chvelocity(B,D,vortices,M,DT,sigma,vor)
+  real, intent(in) :: B,D,DT,sigma
   real, DIMENSION(100000,3), intent(in) :: vortices
   real, DIMENSION(100000,3) :: vor
   integer, intent(in) :: M
@@ -201,25 +158,9 @@ subroutine chvelocity(B,D,uslip,vortices,M,DT,sigma,vor)
            dy = dy + v*DT
         END IF
      END DO
-     if(y < 0.05 .OR. y > D-0.05) then
-        print *, dx, uslip*DT
-     end if
-     dx = dx - uslip*DT
+     vor(i,1) = x+dx
+     vor(i,2) = y+dy
      vor(i,3) = w0
-     IF(x+dx > B) THEN
-        vor(i,1) = x+dx - B
-     ELSEIF(x+dx < 0) THEN
-        vor(i,1) = x+dx + B
-     ELSE
-        vor(i,1) = x+dx
-     END IF
-     IF(y+dy > D) THEN
-        vor(i,2) = D - eps
-     ELSEIF (y+dy < 0) THEN
-        vor(i,2) = eps
-     ELSE
-        vor(i,2) = y+dy
-     END IF
   END DO
   !$OMP END DO
 end subroutine chvelocity
