@@ -36,8 +36,9 @@ IF(NIT == 0) THEN
          CALL RANDOM_NUMBER(f)
          X = ((I-1) + rho(f,h))*delta
          CALL RANDOM_NUMBER(g)
+         YY = ((J-1) + 0.5)*delta
          Y = ((J-1) + rho(g,h))*delta
-         W = WW*(1-2*Y/D)
+         W = WW*(1-2*YY/D)
          IJ = (I-1)*ND + J
          VORTICES(IJ,1) = X
          VORTICES(IJ,2) = Y
@@ -61,8 +62,8 @@ END IF
 
 
 DO it=NIT+1,250
-   !$OMP PARALLEL
    uslip = getuslip(B,D,vortices,M,sigma)
+   !$OMP PARALLEL
    !PRINT *, uslip
    !--Update vortices to temporary vor-- 
    call chvelocity(B,D,uslip,vortices,M,DT,sigma,vor)
@@ -152,10 +153,11 @@ real function getuslip(B,D,vortices,M,sigma)
            Z0 = CMPLX(qx,qy)
            ZZ0 = Z-Z0
            AZZ0 = ABS(ZZ0)
+           fc = gexp(AZZ0,sigma)*(qw/D)
            !PRINT *, "params:", i, j, A,B,Z,Z0,MZ,FZ
            CALL cvelocity(B,D,Z,Z0,FZ)
            !PRINT *, "FZ:", REAL(FZ), AIMAG(FZ), gexp(AZZ0,sigma)
-           VELOCITY = IMG*gexp(AZZ0,sigma)*(qw/D)*FZ
+           VELOCITY = IMG*fc*FZ
            u = REAL(VELOCITY)
            v = AIMAG(VELOCITY)
            us(k) = us(k) + u
@@ -164,6 +166,7 @@ real function getuslip(B,D,vortices,M,sigma)
      END DO
      !PRINT *, y, us(k), vs(k)
   ENDDO
+  WRITE(*,*) us(1)/MS, us(KS+1)/MS
   getuslip = (us(1)+us(KS+1))/(2*MS)
 end function getuslip
 
@@ -173,7 +176,7 @@ subroutine chvelocity(B,D,uslip,vortices,M,DT,sigma,vor)
   real, DIMENSION(100000,3) :: vor
   integer, intent(in) :: M
   COMPLEX :: Z, Z0, ZZ0, IMG, VELOCITY, FZ
-  REAL :: w0, w, u, v, AZZ0
+  REAL :: w0, w, x, y, dx, dy, du, dv, u, v, AZZ0
   IMG =CMPLX(0.0,1.0)
   !$OMP DO
   DO i=1,M
@@ -181,8 +184,8 @@ subroutine chvelocity(B,D,uslip,vortices,M,DT,sigma,vor)
      y = vortices(i,2)
      Z = CMPLX(x,y)
      w0 = vortices(i,3)
-     dx = 0
-     dy = 0
+     u = 0
+     v = 0
      DO j=1,M
         IF(.not. i == j) THEN
            qx = vortices(j,1)
@@ -191,20 +194,22 @@ subroutine chvelocity(B,D,uslip,vortices,M,DT,sigma,vor)
            Z0 = CMPLX(qx,qy)
            ZZ0 = Z-Z0
            AZZ0 = ABS(ZZ0)
+           fc = gexp(AZZ0,sigma)*(qw/D)
            !PRINT *, "params:", i, j, A,B,Z,Z0,MZ,FZ
            CALL cvelocity(B,D,Z,Z0,FZ)
            !PRINT *, "FZ:", FZ, gexp(AZZ0,sigma)
-           VELOCITY = IMG*gexp(AZZ0,sigma)*(qw/D)*FZ
-           u = REAL(VELOCITY)
-           v = AIMAG(VELOCITY)
-           dx = dx + u*DT
-           dy = dy + v*DT
+           VELOCITY = IMG*fc*FZ
+           du = REAL(VELOCITY)
+           dv = AIMAG(VELOCITY)
+           u = u + du
+           v = v + dv
         END IF
      END DO
      if(y < 0.05 .OR. y > D-0.05) then
-        print *, dx, uslip*DT
+        print *, uslip
      end if
-     dx = dx - uslip*DT
+     dx = (u - uslip)*DT
+     dy = v*DT
      vor(i,3) = w0
      IF(x+dx > B) THEN
         vor(i,1) = x+dx - B
