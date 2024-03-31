@@ -8,5 +8,5 @@ do
     val="outc/vortices_$v.dat"
     touch $val
 done
-gfortran -O3 -o channel_vortices2d channel_vortices2d.f90 -fopenmp
+gfortran -Ofast -O3 -o channel_vortices2d channel_vortices2d.f90 -fopenmp
 time ./channel_vortices2d

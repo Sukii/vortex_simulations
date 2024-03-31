@@ -38,6 +38,10 @@ function love.load()
    font = love.graphics.newFont(20)
    state = "run"
    vortices = loadVortices(dir .. "/vortices_00000.dat")
+   scale = 8.0
+   X0 = -2800.0
+   Y0 = -3000.0
+   rblob = 1.5
 end
 
 
@@ -67,7 +71,7 @@ function love.update(dt)
    time = os.date("*t")
    local sec = time.sec
    --print(n,sec)
-   if(state == "run" and n < 1000) then
+   if(state == "run" and n < 250) then
       n = n + 1
       print(n)
       vortices = updateVortices(dt,n,dir)
@@ -112,6 +116,15 @@ function rgba(v)
       local r = 1-v
       local g = 1-2*math.abs(v-0.5)
       local b = v
+      if v < 0 then
+	 r = 1
+	 g = 0
+	 b = 0
+      else
+	 r = 0
+	 g = 0
+	 b = 1	 
+      end
       local a = 1
       return {r,g,b,a}
 end
@@ -147,10 +160,13 @@ function fs(c)
    return s
 end
 
-function multicircle(points)
-   for i,p in pairs(points) do
+function multicircle(pts)
+   ppts = {}
+   for i,p in pairs(pts) do
       color = rgba(p[3]/W)
       setColor(color)
-      circle("fill",p[1],p[2],2)
+      circle("fill",X0+scale*p[1],Y0+scale*p[2],rblob)
+      --table.insert(ppts,{X0+scale*p[1],Y0+scale*p[2],color[1],color[2],color[3],color[4]})
    end
+   --points(ppts)
 end

@@ -12,13 +12,13 @@ READ(*,*) NIT
 WRITE(s,'(I0.5)') NIT
 
 filename = 'out/vortices_' // s // '.dat'
-M = 50000  !-- number of vortices
+M = 100000  !-- number of vortices
 WW = 1.0
 eps = 0.000001
 PI = ASIN(1.0)*2
 sigma = PI
 BB = 40.0
-DD = 40.0
+DD = 10.0
 R1 = 0.3
 R2 = 0.4
 THETA1 = 0.0
@@ -40,13 +40,13 @@ IF(NIT == 0) THEN
    !--Initializing vortices--
    DO i = 1,M
       CALL RANDOM_NUMBER(f)
-      b = DD*f
-      CALL RANDOM_NUMBER(u)
-      a = u*BB
+      a = BB*f
+      CALL RANDOM_NUMBER(g)
+      b = DD*g
       x = XX + a
       y = YY + b
-      CALL RANDOM_NUMBER(g)
-      w = WW*(1-2*g)
+      CALL RANDOM_NUMBER(h)
+      w = WW*(1-2*h)
       vortices(i,1) = x
       vortices(i,2) = y
       vortices(i,3) = w
@@ -114,8 +114,10 @@ subroutine rvelocity(vortices,M,DD,BB,DT,sigma,vor)
            pqx = x-qx
            pqy = y-qy
            rpq = pqx**2+pqy**2
-           dx = dx - gexp(rpq,sigma)*pqy*qw*DT/(rpq+eps)
-           dy = dy + gexp(rpq,sigma)*pqx*qw*DT/(rpq+eps)
+           IF(SQRT(rpq) < DD/5) THEN 
+              dx = dx - gexp(rpq,sigma)*pqy*qw*DT/(rpq+eps)
+              dy = dy + gexp(rpq,sigma)*pqx*qw*DT/(rpq+eps)
+           END IF
         END IF
      END DO
      vor(i,1) = x+dx

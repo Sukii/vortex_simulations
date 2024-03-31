@@ -7,5 +7,5 @@ do
     val="out/vortices_$v.dat"
     touch $val
 done
-gfortran -o free_vortices2d free_vortices2d.f90 -fopenmp
+gfortran -Ofast -O3 -o free_vortices2d free_vortices2d_mc.f90 -fopenmp
 ./free_vortices2d
