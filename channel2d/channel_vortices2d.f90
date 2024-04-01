@@ -26,7 +26,7 @@ READ(*,*) NIT
 WRITE(s,'(I0.5)') NIT
 filename = 'outc/vortices_'//s//'.dat'
 !PRINT *, filename
-DT = 0.01
+DT = 0.1
 
 IF(NIT == 0) THEN
    open(unit=NIT, file=filename, status="old", position="append", action="write")
@@ -61,12 +61,12 @@ ELSE
 END IF
 
 
-DO it=NIT+1,250
+DO it=NIT+1,500
    uslip = getuslip(B,D,vortices,M,sigma)
    !$OMP PARALLEL
    !PRINT *, uslip
    !--Update vortices to temporary vor-- 
-   call chvelocity(B,D,uslip,vortices,M,DT,sigma,vor)
+   CALL chvelocity(B,D,uslip,vortices,M,DT,sigma,vor)
    !$OMP END PARALLEL
    !--Update vortices from vor--
    vortices = vor
@@ -178,6 +178,7 @@ subroutine chvelocity(B,D,uslip,vortices,M,DT,sigma,vor)
   COMPLEX :: Z, Z0, ZZ0, IMG, VELOCITY, FZ
   REAL :: w0, w, x, y, dx, dy, du, dv, u, v, AZZ0
   IMG =CMPLX(0.0,1.0)
+  eps = 0.000001
   !$OMP DO
   DO i=1,M
      x = vortices(i,1)
@@ -206,7 +207,7 @@ subroutine chvelocity(B,D,uslip,vortices,M,DT,sigma,vor)
         END IF
      END DO
      if(y < 0.05 .OR. y > D-0.05) then
-        print *, uslip
+        !print *, uslip
      end if
      dx = (u - uslip)*DT
      dy = v*DT

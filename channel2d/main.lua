@@ -5,7 +5,7 @@ function love.load()
    circle = love.graphics.circle
    line = love.graphics.line
    rectangle = love.graphics.rectangle
-   love.graphics.setFont(love.graphics.newFont(50))
+   love.graphics.setFont(love.graphics.newFont(100))
    font = love.graphics.getFont()
    setFont = love.graphics.setFont
    setColor = love.graphics.setColor
@@ -21,13 +21,13 @@ function love.load()
    delta = 1.0/N
    sigma = delta/N
    WW = 1.0*sigma
-   DT = 0.01
+   DT = 0.1
    rsigma = math.sqrt(sigma)
    state = "run"
    scale = 40
    X0 = 200
    Y0 = 100
-   rblob = 3.0
+   rblob = 7.0
    vortices = {}
    vortices = loadVortices(dir .. "/vortices_00000.dat")
 end
@@ -78,7 +78,7 @@ function love.update(dt)
    time = os.date("*t")
    local sec = time.sec
    --print(n,sec)
-   if(state == "run" and n < 250) then
+   if(state == "run" and n < 500) then
       n = n + 1
       print(n)      
       vortices = updateVortices(dt,n)

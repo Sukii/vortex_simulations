@@ -2,7 +2,7 @@
 mkdir outc/
 rm ./channel_vortices2d
 rm outc/*.*
-for n in {0..250};
+for n in {0..500};
 do
     v=$(printf "%05d" $n)
     val="outc/vortices_$v.dat"
