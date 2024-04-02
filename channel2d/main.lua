@@ -17,7 +17,7 @@ function love.load()
    n = 0
    B = 20.0
    D = 10.0
-   N = 5
+   N = 10
    delta = 1.0/N
    sigma = delta/N
    WW = 1.0*sigma
@@ -27,7 +27,7 @@ function love.load()
    scale = 40
    X0 = 200
    Y0 = 100
-   rblob = 7.0
+   rblob = 4.0
    vortices = {}
    vortices = loadVortices(dir .. "/vortices_00000.dat")
 end

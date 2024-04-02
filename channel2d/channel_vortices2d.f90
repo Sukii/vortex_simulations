@@ -8,13 +8,14 @@ REAL :: D, PI, A, B, W, delta, mu, NR
 character(len=40) :: filename
 character(len=5) :: s
 integer :: io, iox, IT, I, J, IJ, NMU, NIT
+character(len=12), dimension(:), allocatable :: args
 
 io = 0
 iox = 100000001
 D = 10.0
 NR = 2.0
 B = D*NR
-N = 5
+N = 10
 ND = FLOOR(N*D)
 NB = FLOOR(N*B)
 M = NB*ND
@@ -22,7 +23,14 @@ delta = 1.0/N
 h = 0.2
 sigma = delta/N
 WW = 1.0*sigma
-READ(*,*) NIT
+
+num_args = command_argument_count()
+allocate(args(num_args))
+do ix = 1, num_args
+   call get_command_argument(ix,args(ix))
+end do
+WRITE(NIT,*) args(1)
+
 WRITE(s,'(I0.5)') NIT
 filename = 'outc/vortices_'//s//'.dat'
 !PRINT *, filename
