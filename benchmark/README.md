@@ -33,7 +33,7 @@ Total run in seconds:
 
 ```
 
-## Running `llama2.mojo` on different CPU configurations
+## Running [llama2.mojo(https://github.com/tairov/llama2.mojo) on different CPU configurations
 
 ```
 mojo llama2.mojo tl-chat.bin -z tok_tl-chat.bin -n 256 -t 0 -s 100 -i "<|im_start|>user\nGive me a python function to generate Fibonacci sequence<|im_end|>\n<|im_start|>assistant\n"
