@@ -4,7 +4,7 @@
 
 Running this benchmark code [modified OpenMP code](https://fortran-lang.discourse.group/uploads/short-url/oJ4C7T6AmsDWZh6p5SZyMiEOYdz.f90)
 
-1. Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz
+1. Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz (PC)
 
 ```
 Number of physical cores: 4
@@ -18,7 +18,7 @@ Total run in seconds:
 8 threads 3.8750
 ```
 
-2. 12th Gen Intel(R) Core(TM) i5-1235U
+2. 12th Gen Intel(R) Core(TM) i5-1235U (Laptop)
 ```
 Number of physical cores: 10
 Number of logical cores: 12
@@ -39,7 +39,7 @@ Total run in seconds:
 mojo llama2.mojo tl-chat.bin -z tok_tl-chat.bin -n 256 -t 0 -s 100 -i "<|im_start|>user\nGive me a python function to generate Fibonacci sequence<|im_end|>\n<|im_start|>assistant\n"
 ```
 
-1. Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz
+1. Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz (PC)
 
 ```
 Number of physical cores: 4
@@ -54,7 +54,7 @@ sys	0m10.896s
 
 ```
 
-2. 12th Gen Intel(R) Core(TM) i5-1235U
+2. 12th Gen Intel(R) Core(TM) i5-1235U (Laptop)
 ```
 Number of physical cores: 10
 Number of logical cores: 12
