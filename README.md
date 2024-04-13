@@ -1,6 +1,6 @@
 # Vortex Simulations
 
-This work was part of my Ph.D. thesis work in Indian Statistical Institute, Calcutta (Kolkatta). At that time it ran on [VAX](https://en.wikipedia.org/wiki/VAX) systems with 512MB RAM! [Dr.U.N.Sinha](https://www.facebook.com/DrUnSinha/), developed his `FloSolver` in 1986, a powerful super computer for such flow simulations. Now I am able to run this on my laptop with Intel 7 and 12 CPU cores using OpenMP support!
+This work was part of my Ph.D. thesis work in Indian Statistical Institute, Calcutta (Kolkatta). At that time it ran on [VAX](https://en.wikipedia.org/wiki/VAX) systems with 512MB RAM! [Dr.U.N.Sinha](https://www.facebook.com/DrUnSinha/), developed his `FloSolver` in 1986, a powerful super computer for such flow simulations. Now I am able to run this on my laptop with 12th generation Intel 5 and 12 CPU cores using OpenMP support!
 
 We use FORTRAN for generating flow data and Lua-Love2D for displaying results as a graphical simulation. Rewriting the FORTRAN code in [Mojo](https://github.com/modularml/mojo) to see how fast it runs on my laptop. Also hoping to do some Deep Learning simulations of vorticity flows with some application to ocean and atmospheric flows.
 
